@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ssc.api.name }}
+  namespace: {{ .Values.ssc.namespace }}
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.ssc.api.port }}
+      targetPort: {{ .Values.ssc.api.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ .Values.ssc.api.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

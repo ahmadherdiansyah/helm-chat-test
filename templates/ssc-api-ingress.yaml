@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Values.ssc.api.name }}
+  namespace: {{ .Values.ssc.namespace }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "web-static-ip"
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    {{- if eq .Values.ssc.api.rule.rewrite true }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ssc.api.rule.host }}
+    http:
+      paths: 
+      - path: {{ .Values.ssc.api.rule.path }}
+        backend:
+          serviceName: {{ .Values.ssc.api.name }}
+          servicePort: {{ .Values.ssc.api.port }}

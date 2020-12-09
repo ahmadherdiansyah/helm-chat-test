@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ssc.attendance.name }}
+  namespace: {{ .Values.ssc.namespace }}
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.ssc.attendance.port }}
+      targetPort: {{ .Values.ssc.attendance.port }}
+      protocol: TCP
+      name: grpc
+  selector:
+    app.kubernetes.io/name: {{ .Values.ssc.attendance.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

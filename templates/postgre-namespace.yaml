@@ -1,0 +1,6 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: {{ .Values.postgre.namespace }}
+  labels:
+    name: {{ .Values.postgre.name }}

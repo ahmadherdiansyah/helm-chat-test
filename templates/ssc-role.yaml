@@ -1,0 +1,9 @@
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ .Values.ssc.namespace }}
+  name: {{ .Values.ssc.name }}
+rules:
+- apiGroups: ["extensions",""] # "" indicates the core API group
+  resources: ["pods","deployments","pods/log"]
+  verbs: ["get", "watch", "list","exec","getLogs","update"]

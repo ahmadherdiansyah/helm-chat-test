@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.ssc.utility.name }}
+  namespace: {{ .Values.ssc.namespace }}
+spec:
+  type: NodePort
+  ports:
+    - port: {{ .Values.ssc.utility.port }}
+      targetPort: {{ .Values.ssc.utility.port }}
+      protocol: TCP
+      name: grpc
+  selector:
+    app.kubernetes.io/name: {{ .Values.ssc.utility.name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

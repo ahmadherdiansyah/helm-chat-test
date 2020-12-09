@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.postgre.name }}
+  namespace: {{ .Values.postgre.namespace }}
+spec:
+  serviceName: {{ .Values.postgre.name }}
+  replicas: {{ .Values.postgre.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.postgre.name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ .Values.postgre.name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Values.postgre.name }}
+          image: "{{ .Values.postgre.image }}"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: POSTGRESQL_DATABASE
+            value: ssc
+          - name: POSTGRESQL_USERNAME
+            value: postgres
+          - name: POSTGRESQL_PASSWORD
+            value: jaringan123
+          - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+            value: uuid-ossp
+          - name: POSTGRESQL_INITSCRIPTS_PASSWORD
+            value: jaringan123
+          ports:
+            - name: postgres
+              containerPort: {{ .Values.postgre.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: {{.Values.postgre.volumeName}}
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              memory: "128Mi"
+      volumes:
+        - name: {{.Values.postgre.volumeName}}
+          persistentVolumeClaim:
+            claimName: {{.Values.postgre.volumeClaimName}}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
